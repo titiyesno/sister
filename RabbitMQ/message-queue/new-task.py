@@ -5,7 +5,7 @@ import threading
 import os.path
 #import pickle
 
-path = '/home/tities/distributed-systems/RabbitMQ/message-queue/var/log/cups/'
+path = '/home/tities/var/log/cups/'
 num_files = len([f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f)) and f.startswith('error_log')])
 #isi = []
 
@@ -25,7 +25,7 @@ class MyThread(threading.Thread):
 
 		namafile = ""
 		iter = self.i
-		while (iter < 2) :
+		while (iter < num_files) :
 			if iter == 0 :
 				nama_file = path + "error_log"
 			else :
