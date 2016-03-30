@@ -10,12 +10,13 @@ channel = connection.channel()
 channel.queue_declare(queue='task_queue', durable=True)
 print ' [*] Waiting for messages. To exit press CTRL+C'
 
-logevent = {}
+
 isi = []
 
 def callback(ch, method, properties, body):
     #print "%r" % (body,)
-    global logevent
+    #global logevent
+    logevent = {}
     isi = pickle.loads(body)
     for i in isi:
         #print i

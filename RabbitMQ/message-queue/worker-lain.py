@@ -21,13 +21,14 @@ path = '/home/tities/var/log/cups/'
 num_files = len([f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f)) and f.startswith('error_log')])
 nama_file = ""
 iter = 0
-while (iter < num_files) :
+while (iter < 3) :
     if iter == 0 :
         nama_file = path + "error_log"
         #print nama_file
     else :
         nama_file = path + "error_log." + str(iter)
         #print nama_file
+    print nama_file
     with open(nama_file,'r') as f:
         for line in f:
             message = line.strip('\n')
