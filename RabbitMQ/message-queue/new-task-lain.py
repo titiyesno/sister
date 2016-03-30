@@ -12,7 +12,7 @@ connection = pika.BlockingConnection(pika.ConnectionParameters(
         host='localhost'))
 channel = connection.channel()
 
-channel.queue_declare(queue='task_q', durable=True)
+'''channel.queue_declare(queue='task_q', durable=True)
 
 for i in range(0,2):
 	message = "Start"
@@ -21,8 +21,8 @@ for i in range(0,2):
 	                      body=message,
 	                      properties=pika.BasicProperties(
 	                         delivery_mode = 2, # make message persistent
-	                      ))
-	print(" [x] Sent %r" % message)
+	                      ))'''
+	#print(" [x] Sent %r" % message)
 
 channel.queue_declare(queue='balik', durable=True)
 
