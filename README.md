@@ -1,3 +1,2 @@
 # sister
-tugas-tugas sister
-hehe
+tugas-tugas sistem terdistribusi
