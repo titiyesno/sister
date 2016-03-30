@@ -21,7 +21,9 @@ print(" [x] Sent %r" % message)
 channel.queue_declare(queue='balik', durable=True)
 
 def callback(ch, method, properties, body):
-	print pickle.loads(body)
+	for event in pickle.loads(body):
+		print event, pickle.loads(body)[event]
+	#print pickle.loads(body)
 	ch.basic_ack(delivery_tag = method.delivery_tag)
 
 channel.basic_qos(prefetch_count=1)
