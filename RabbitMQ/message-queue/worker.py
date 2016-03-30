@@ -30,6 +30,7 @@ def callback(ch, method, properties, body):
     #print event, "=======>",logevent[event]
     #time.sleep( body.count('.') )
     #print " [x] Done"
+    print logevent
     channel.queue_declare(queue='baliklagi', durable=True)
     channel.basic_publish(exchange='',
                       routing_key='baliklagi',

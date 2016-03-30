@@ -3,6 +3,8 @@ import pika
 import sys
 import pickle
 
+log = {}
+
 connection = pika.BlockingConnection(pika.ConnectionParameters(
         host='localhost'))
 channel = connection.channel()
@@ -21,8 +23,15 @@ print(" [x] Sent %r" % message)
 channel.queue_declare(queue='balik', durable=True)
 
 def callback(ch, method, properties, body):
-	for event in pickle.loads(body):
-		print event, pickle.loads(body)[event]
+	temp = {}
+	temp = pickle.loads(body)
+	for key in temp:
+		if key not in log:
+			log[key] = temp[key]
+		else:
+			log[key] += temp[key]
+	for key in log:
+		print key, log[key]
 	#print pickle.loads(body)
 	ch.basic_ack(delivery_tag = method.delivery_tag)
 
