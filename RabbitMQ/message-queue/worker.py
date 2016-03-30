@@ -11,26 +11,23 @@ channel.queue_declare(queue='task_queue', durable=True)
 print ' [*] Waiting for messages. To exit press CTRL+C'
 
 logevent = {}
+isi = []
 
 def callback(ch, method, properties, body):
     #print "%r" % (body,)
     global logevent
-    split1 = body.split()
-    #print split1
-    event = split1[3]+" "+split1[4]
-    #print event
-    #panjang = len(logevent)
-    #print panjang
-    if event not in logevent:
-    	#print "belum"
-    	logevent[event] = 1
-    else:
-    	#print "sudah"
-    	logevent[event] += 1
-    #print event, "=======>",logevent[event]
-    #time.sleep( body.count('.') )
-    #print " [x] Done"
+    isi = pickle.loads(body)
+    for i in isi:
+        #print i
+        split = i.split()
+        event = split[3] + " " + split[4]
+        #print event
+        if event not in logevent:
+            logevent[event] = 1
+        else:
+            logevent[event] += 1
     print logevent
+    
     channel.queue_declare(queue='baliklagi', durable=True)
     channel.basic_publish(exchange='',
                       routing_key='baliklagi',
