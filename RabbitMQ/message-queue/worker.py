@@ -2,7 +2,7 @@
 import pika
 import time
 import sys
-#import pickle
+import pickle
 
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
 channel = connection.channel()
@@ -28,16 +28,22 @@ def callback(ch, method, properties, body):
     	#print "sudah"
     	logevent[event] += 1
     #print event, "=======>",logevent[event]
-    print logevent
-    print "\n ======================================= \n"
     #time.sleep( body.count('.') )
     #print " [x] Done"
+    channel.queue_declare(queue='baliklagi', durable=True)
+    channel.basic_publish(exchange='',
+                      routing_key='baliklagi',
+                      body=pickle.dumps(logevent),
+                      properties=pika.BasicProperties(
+                      delivery_mode = 2, # make message persistent
+                      ))
     ch.basic_ack(delivery_tag = method.delivery_tag)
 
 
 channel.basic_qos(prefetch_count=1)
 channel.basic_consume(callback,
                       queue='task_queue')
+
 
 try:
     channel.start_consuming()

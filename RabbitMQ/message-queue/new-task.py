@@ -1,52 +1,44 @@
 #!/usr/bin/env python
 import pika
 import sys
-import threading
 import os.path
-#import pickle
+import pickle
 
 path = '/home/tities/var/log/cups/'
 num_files = len([f for f in os.listdir(path) if os.path.isfile(os.path.join(path, f)) and f.startswith('error_log')])
 #isi = []
+connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+channel = connection.channel()
 
-class MyThread(threading.Thread):
-	def __init__(self, i):
-		threading.Thread.__init__(self)
-		self.i = i
-		self.process = None
+channel.queue_declare(queue='task_queue', durable=True)
 
-	def run(self):
-		#global isi
-		self.process = 1
-		connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
-		channel = connection.channel()
+namafile = ""
+iter = 0
+while (iter < num_files) :
+	if iter == 0 :
+		nama_file = path + "error_log"
+	else :
+		nama_file = path + "error_log." + str(iter)
+	with open(nama_file,'r') as f:
+		for line in f:
+			message = line.strip('\n')
+			channel.basic_publish(exchange='',
+						          routing_key='task_queue',
+						          body=message,
+						          properties=pika.BasicProperties(
+						          delivery_mode = 2, # make message persistent
+						         ))
+	f.close()
+	print " [x] Sent %r" % (nama_file,)
+	iter=iter+1
 
-		channel.queue_declare(queue='task_queue', durable=True)
+def callback(ch, method, properties, body):
+	print pickle.loads(body)
+	ch.basic_ack(delivery_tag = method.delivery_tag)
 
-		namafile = ""
-		iter = self.i
-		while (iter < num_files) :
-			if iter == 0 :
-				nama_file = path + "error_log"
-			else :
-				nama_file = path + "error_log." + str(iter)
+channel.basic_qos(prefetch_count=1)
+channel.basic_consume(callback,
+                      queue='baliklagi')
 
-			with open(nama_file,'r') as f:
-				for line in f:
-					message = line.strip('\n')
-					#isi.append(message)
-					channel.basic_publish(exchange='',
-						                  routing_key='task_queue',
-						                  body=message,
-						                  properties=pika.BasicProperties(
-						                  delivery_mode = 2, # make message persistent
-						                 ))
-				f.close()
-#message = ' '.join(sys.argv[1:]) or "Hello World!"
-			print " [x] Sent %r" % (nama_file,)
-			iter=iter+1
-		connection.close()
-
-for i in range(0, 1):
-	t = MyThread(i)
-	t.start()
+channel.start_consuming()
+connection.close()
