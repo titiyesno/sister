@@ -24,6 +24,10 @@ def hello():
 		#print len(isi)
 		iter=iter+1
 	return pickle.dumps(isi)
-server = SOAPpy.SOAPServer(("localhost", 5000))
-server.registerFunction(hello)
-server.serve_forever()
+
+if __name__=='__main__':
+	print "Server nyala..."
+	server = SOAPpy.SOAPServer(("localhost", 8080))
+	server.config.debug = 1
+	server.registerFunction(hello)
+	server.serve_forever()
