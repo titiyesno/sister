@@ -14,7 +14,7 @@ def hello():
 			nama_file = path + "error_log"
 		else :
 			nama_file = path + "error_log." + str(iter)
-		print nama_file
+		#print nama_file
 		with open(nama_file,'r') as f:
 			for line in f:
 				message = line.strip('\n')

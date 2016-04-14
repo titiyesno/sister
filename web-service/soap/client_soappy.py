@@ -14,7 +14,7 @@ bukafile.close()
 
 iter = 0
 while(iter < panjang-1):
-	server = SOAPpy.SOAPProxy("http://localhost:"+str(ipini[iter])+"/")
+	server = SOAPpy.SOAPProxy("http://"+str(ipini[iter])+":8080/")
 #server = SOAPpy.SOAPProxy("http://localhost:8080/")
 	#server.config.debug = 1
 	start = server.hello()
